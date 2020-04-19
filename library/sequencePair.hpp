@@ -15,12 +15,13 @@
 #include<exception>
 #include<tuple>
 
-using sequences = std::tuple<std::string, std::string>;
-using optimalAlignments = std::vector<sequences>;
-using alignment = std::tuple<std::size_t, optimalAlignments>;
-
 class SequencePair {
 public:
+
+  using sequences = std::tuple<std::string, std::string>;
+  using optimalAlignments = std::vector<sequences>;
+  using alignment = std::tuple<std::size_t, optimalAlignments>;
+
   SequencePair(const std::string& seq1, const std::string& seq2) : sequence1_(seq1), sequence2_(seq2) {}
 
   const sequences getSequences() const { return std::make_tuple(sequence1_, sequence2_); }
