@@ -16,6 +16,8 @@
 #include<tuple>
 
 using sequences = std::tuple<std::string, std::string>;
+using optimalAlignments = std::vector<sequences>;
+using alignment = std::tuple<std::size_t, optimalAlignments>;
 
 class SequencePair {
 public:
@@ -24,9 +26,11 @@ public:
   const sequences getSequences() const { return std::make_tuple(sequence1_, sequence2_); }
 
   const std::size_t getHammingDistance() const;
+  const alignment getEditDistance() const;
 
 private:
   void checkSequenceLength() const;
+  const std::size_t dpMin(const std::size_t& insertion, const std::size_t& deletion, const std::size_t& substitution) const;
 
   const std::string sequence1_;
   const std::string sequence2_;

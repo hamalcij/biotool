@@ -37,10 +37,18 @@ public:
 
   void performTest() {
     auto[sequence1, sequence2] = SEQUENCES(mySequencePair_);
+    auto[editDistance, alignment] = EDIT_DISTANCE(mySequencePair_);
 
     std::cout << "Sequence 1: " << sequence1 << std::endl;
     std::cout << "Sequence 2: " << sequence2 << std::endl;
     std::cout << "Hamming distance: " << HAMMING_DISTANCE(mySequencePair_) << std::endl;
+    std::cout << "Edit distance: " << editDistance << std::endl;
+
+    for (auto&& [seq1, seq2] : alignment) {
+      std::cout << std::endl;
+      std::cout << seq1 << std::endl;
+      std::cout << seq2 << std::endl;
+    }
   }
 
 private:

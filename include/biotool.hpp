@@ -32,6 +32,7 @@
 #define SEQUENCE_PAIR SequencePair
 #define SEQUENCES(sequencePair) sequencePair.getSequences()
 #define HAMMING_DISTANCE(sequencePair) sequencePair.getHammingDistance()
+#define EDIT_DISTANCE(sequencePair) sequencePair.getEditDistance()
 
 // END PAIR ALIGNMENT
 ////////////////////////////////////////////////////////////////////////

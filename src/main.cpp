@@ -13,7 +13,7 @@ int main() {
   TestFasta fasta("/Users/janhamalcik/github/biotool/testfiles/fasta");
   fasta.performTest();
 
-  TestSequencePair sequencePair("ABCDEF", "ABDCEF");
+  TestSequencePair sequencePair("SHORTS", "HORSTS");
   sequencePair.performTest();
 
   return 0;
