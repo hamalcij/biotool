@@ -9,8 +9,6 @@
 
 #include "sequencePair.hpp"
 
-#include<iostream>
-
 const std::size_t SequencePair::getHammingDistance() const {
   checkSequenceLength();
 
