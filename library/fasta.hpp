@@ -1,7 +1,7 @@
 // biotool
 // Bioinformatics Toolbox
 //
-// library/fastaParser.hpp
+// library/fasta.hpp
 // Copyright (c) 2020 Hamalčík Jan
 //
 // Definition of class Fasta

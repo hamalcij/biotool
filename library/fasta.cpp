@@ -1,7 +1,7 @@
 // biotool
 // Bioinformatics Toolbox
 //
-// library/fastaParser.cpp
+// library/fasta.cpp
 // Copyright (c) 2020 Hamalčík Jan
 //
 // Implementation of class Fasta
