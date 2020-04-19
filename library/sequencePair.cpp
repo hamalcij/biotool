@@ -22,7 +22,7 @@ const std::size_t SequencePair::getHammingDistance() const {
   return hammingDistance;
 }
 
-const alignment SequencePair::getEditDistance() const {
+const SequencePair::alignment SequencePair::getEditDistance() const {
   const std::size_t sequence1Size = sequence1_.length() + 1;
   const std::size_t sequence2Size = sequence2_.length() + 1;
 
