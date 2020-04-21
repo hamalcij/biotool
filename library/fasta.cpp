@@ -55,7 +55,6 @@ void Fasta::parseFastaFile(const std::string& path) {
 
 void Fasta::fastaFileCorrupted(const std::string& path) {
   throw std::ifstream::failure("Fasta file at " + path + " is corrupted!");
-
 }
 
 bool Fasta::fileIsEmpty(std::ifstream& file) {

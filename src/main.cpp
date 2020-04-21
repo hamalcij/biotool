@@ -16,5 +16,8 @@ int main() {
   TestSequencePair sequencePair("SHORTS", "HORSTS");
   sequencePair.performTest();
 
+  TestPdb pdb("/Users/janhamalcik/github/biotool/testfiles/hemoglobin.pdb");
+  pdb.performTest();
+
   return 0;
 }
