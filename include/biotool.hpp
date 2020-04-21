@@ -100,6 +100,8 @@ SOFTWARE.
 #define NUMBER_OF_HET_RESIDUES(unit) unit.getNumberOfHetResidues()
 #define NUMBER_OF_ATOMS(unit) unit.getNumberOfAtoms()
 #define NUMBER_OF_HET_ATOMS(unit) unit.getNumberOfHetAtoms()
+#define GET_ATOMS_CLOSE_TO_LIGAND(model, ligand, atoms, maxDistance) model.getAtomsCloseToLigand(ligand, atoms, maxDistance)
+#define GET_RESIDUES_CLOSE_TO_LIGAND(model, ligand, residues, maxDistance) model.getResiduesCloseToLigand(ligand, residues, maxDistance)
 
 // END PDB
 ////////////////////////////////////////////////////////////////////////

@@ -41,6 +41,8 @@ SOFTWARE.
 #include<fstream>
 #include<exception>
 #include<cctype>
+#include<cstring>
+#include<cmath>
 
 ////////////////////////////////////////////////////////////////////////
 // BEGIN PDB
@@ -78,6 +80,9 @@ public:
 
         class Atom {
         public:
+
+          friend class Model;
+
           Atom(
             const Model& model,
             const std::size_t index
@@ -103,6 +108,8 @@ public:
         ////////////////////////////////////////////////////////////////////////
 
         using atoms = std::vector<Atom>;
+
+        friend class Model;
 
         Residue(
           const Model& model,
@@ -223,7 +230,14 @@ public:
     };
 
     // END CHAIN
-    ////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
+
+    struct ResidueComparator {
+    public:
+      bool operator()(const Chain::Residue& x, const Chain::Residue& y) const {
+        return std::strcmp(x.getID().c_str(), y.getID().c_str()) < 0;
+      }
+    };
 
     using chains = std::vector<Chain>;
 
@@ -244,8 +258,9 @@ public:
     const std::size_t getNumberOfAtoms() const { return atomSerials_.size(); }
     const std::size_t getNumberOfHetAtoms() const { return hetAtomSerials_.size(); }
     const std::size_t getWidth() const;
-    const Chain::Residue::atoms getAtomsCloseToLigand() const;
-    const Chain::residues getResiduesCloseToLigand() const;
+
+    void getAtomsCloseToLigand(const Chain::HetResidue& het, Chain::Residue::atoms& atoms, const float maxDistance) const;
+    void getResiduesCloseToLigand(const Chain::HetResidue& het, Chain::residues& residues, const float maxDistance) const;
 
     void getChains(chains& chainVector) const;
     const Chain findChain(const char id) const;
@@ -265,6 +280,13 @@ public:
         }
       }
       return numberOfDistinctElements;
+    }
+
+    const float distance(
+      const float aX, const float aY, const float aZ,
+      const float bX, const float bY, const float bZ
+    ) const {
+      return std::hypot(aX - bX, aY - bY, aZ - bZ);
     }
 
     Pdb& pdb_;

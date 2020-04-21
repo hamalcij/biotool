@@ -183,6 +183,38 @@ public:
     std::cout << "; Atoms: " << NUMBER_OF_HET_ATOMS(myHetResidue);
     std::cout << std::endl;
 
+    ATOMS nearAtoms;
+    float maxDistance = 3.2;
+    GET_ATOMS_CLOSE_TO_LIGAND(myModel, myHetResidue, nearAtoms, maxDistance);
+    for (auto&& atom : nearAtoms) {
+      auto[nearX, nearY, nearZ] = COORDINATES(atom);
+      std::cout << "      Near Atom within " << maxDistance << "Å ";
+      std::cout << ATOM_NAME(atom) << " " << ID(atom);
+      std::cout << "; Coords (" << nearX << ", " << nearY << ", " << nearZ << ")";
+      std::cout << std::endl;
+    }
+
+    RESIDUES nearResidues;
+    maxDistance = 2.6;
+    GET_RESIDUES_CLOSE_TO_LIGAND(myModel, myHetResidue, nearResidues, maxDistance);
+    for (auto&& residue : nearResidues) {
+      std::cout << "      Near Residue within " << maxDistance << "Å ";
+      std::cout << RESIDUE_NAME(residue) << " " << ID(residue);
+      std::cout << "; Atoms: " << NUMBER_OF_ATOMS(residue);
+      std::cout << std::endl;
+
+      ATOMS nearResAtoms;
+      GET_ATOMS(residue, nearResAtoms);
+      for (auto&& atom : nearResAtoms) {
+        auto[aX, aY, aZ] = COORDINATES(atom);
+        std::cout << "        Atom " << ATOM_NAME(atom) << " " << ID(atom);
+        std::cout << "; (" << aX << ", " << aY << ", " << aZ << ")";
+        std::cout << "; Element: " << ELEMENT(atom);
+        std::cout << "; Charge: " << CHARGE(atom);
+        std::cout << std::endl;
+      }
+    }
+
     HET_ATOM myHetAtom = FIND_ATOM(myHetResidue, "4438");
     auto[hetX, hetY, hetZ] = COORDINATES(myHetAtom);
     std::cout << "      Found atom " << ATOM_NAME(myHetAtom) << " " << ID(myHetAtom);

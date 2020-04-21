@@ -224,6 +224,58 @@ const Pdb::Model::Chain::HetResidue Pdb::Model::Chain::findHetResidue(const std:
 }
 
 //
+void Pdb::Model::getAtomsCloseToLigand(const Pdb::Model::Chain::HetResidue& het, Pdb::Model::Chain::Residue::atoms& atoms, const float maxDistance) const {
+  Pdb::Model::Chain::HetResidue::hetAtoms hetAtoms;
+  het.getAtoms(hetAtoms);
+  atoms.clear();
+
+  for (std::size_t i = 0; i < coords_.size(); ++i) {
+    auto[x, y, z] = coords_[i];
+    for (auto&& hetAtom : hetAtoms) {
+      auto[hetX, hetY, hetZ] = hetAtom.getCoords();
+      if (distance(x, y, z, hetX, hetY, hetZ) <= maxDistance) {
+        atoms.emplace_back(*this, i);
+        break;
+      }
+    }
+  }
+}
+
+//
+void Pdb::Model::getResiduesCloseToLigand(const Pdb::Model::Chain::HetResidue& het, Pdb::Model::Chain::residues& residues, const float maxDistance) const {
+  Pdb::Model::Chain::HetResidue::hetAtoms hetAtoms;
+  het.getAtoms(hetAtoms);
+  residues.clear();
+
+  Pdb::Model::chains chains;
+  getChains(chains);
+  for (auto&& chain : chains) {
+
+    Pdb::Model::Chain::residues chainResidues;
+    chain.getResidues(chainResidues);
+    for (auto&& residue : chainResidues) {
+      bool residueIsNear = false;
+
+      Pdb::Model::Chain::Residue::atoms atoms;
+      residue.getAtoms(atoms);
+      for (auto&& atom : atoms) {
+
+        auto[x, y, z] = atom.getCoords();
+        for (auto&& hetAtom : hetAtoms) {
+          auto[hetX, hetY, hetZ] = hetAtom.getCoords();
+          if (distance(x, y, z, hetX, hetY, hetZ) <= maxDistance) {
+            residues.push_back(residue);
+            residueIsNear = true;
+            break;
+          }
+        }
+        if (residueIsNear) break;
+      }
+    }
+  }
+}
+
+//
 void Pdb::Model::getChains(Pdb::Model::chains& chainVector) const {
   std::size_t from = 0;
   char current = chainIDs_[from];
