@@ -25,7 +25,7 @@ SOFTWARE.
 // biotool
 // Bioinformatics Toolbox
 //
-// include/biotool.hpp
+// biotool.hpp
 // Copyright (c) 2020 Hamalčík Jan
 //
 // API include file, provides access to biotool's features
@@ -34,10 +34,14 @@ SOFTWARE.
 #ifndef BIOTOOL_HPP
 #define BIOTOOL_HPP
 
+#include "library/fasta.hpp"
+#include "library/sequencePair.hpp"
+#include "library/pdb.hpp"
+
+using namespace biotool;
+
 ////////////////////////////////////////////////////////////////////////
 // BEGIN FASTA
-
-#include "library/fasta.hpp"
 
 #define FASTA Fasta
 #define MOLECULE Fasta::Molecule
@@ -51,8 +55,6 @@ SOFTWARE.
 ////////////////////////////////////////////////////////////////////////
 // BEGIN PAIR ALIGNMENT
 
-#include "library/sequencePair.hpp"
-
 #define SEQUENCE_PAIR SequencePair
 #define SEQUENCES(sequencePair) sequencePair.getSequences()
 #define HAMMING_DISTANCE(sequencePair) sequencePair.getHammingDistance()
@@ -61,8 +63,6 @@ SOFTWARE.
 // END PAIR ALIGNMENT
 ////////////////////////////////////////////////////////////////////////
 // BEGIN PDB
-
-#include "library/pdb.hpp"
 
 #define PDB Pdb
 #define MODEL Pdb::Model

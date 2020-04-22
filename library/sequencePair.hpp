@@ -39,26 +39,30 @@ SOFTWARE.
 #include<exception>
 #include<tuple>
 
-class SequencePair {
-public:
+namespace biotool {
 
-  using sequences = std::tuple<std::string, std::string>;
-  using optimalAlignments = std::vector<sequences>;
-  using alignment = std::tuple<std::size_t, optimalAlignments>;
+  class SequencePair {
+  public:
 
-  SequencePair(const std::string& seq1, const std::string& seq2) : sequence1_(seq1), sequence2_(seq2) {}
+    using sequences = std::tuple<std::string, std::string>;
+    using optimalAlignments = std::vector<sequences>;
+    using alignment = std::tuple<std::size_t, optimalAlignments>;
 
-  const sequences getSequences() const { return std::make_tuple(sequence1_, sequence2_); }
+    SequencePair(const std::string& seq1, const std::string& seq2) : sequence1_(seq1), sequence2_(seq2) {}
 
-  const std::size_t getHammingDistance() const;
-  const alignment getEditDistance() const;
+    const sequences getSequences() const { return std::make_tuple(sequence1_, sequence2_); }
 
-private:
-  void checkSequenceLength() const;
-  const std::size_t dpMin(const std::size_t& insertion, const std::size_t& deletion, const std::size_t& substitution) const;
+    const std::size_t getHammingDistance() const;
+    const alignment getEditDistance() const;
 
-  const std::string sequence1_;
-  const std::string sequence2_;
-};
+  private:
+    void checkSequenceLength() const;
+    const std::size_t dpMin(const std::size_t& insertion, const std::size_t& deletion, const std::size_t& substitution) const;
+
+    const std::string sequence1_;
+    const std::string sequence2_;
+  };
+
+}
 
 #endif // SEQUENCE_PAIR_HPP

@@ -35,6 +35,8 @@ SOFTWARE.
 
 #include<iostream>
 
+using namespace biotool;
+
 class TestFasta {
 public:
   TestFasta(const std::string& file) : myFasta_(FASTA(file)) {}
