@@ -34,13 +34,13 @@ SOFTWARE.
 #include "test.hpp"
 
 int main() {
-  TestFasta fasta("/Users/janhamalcik/github/biotool/testfiles/fasta");
+  TestFasta fasta("/Users/janhamalcik/github/biotool/test/testfiles/fasta");
   fasta.performTest();
 
   TestSequencePair sequencePair("SHORTS", "HORSTS");
   sequencePair.performTest();
 
-  TestPdb pdb("/Users/janhamalcik/github/biotool/testfiles/hemoglobin.pdb");
+  TestPdb pdb("/Users/janhamalcik/github/biotool/test/testfiles/hemoglobin.pdb");
   pdb.performTest();
 
   return 0;
