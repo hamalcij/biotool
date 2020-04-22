@@ -224,6 +224,9 @@ public:
     std::cout << "; Element: " << ELEMENT(myHetAtom);
     std::cout << "; Charge: " << CHARGE(myHetAtom);
     std::cout << std::endl;
+
+    std::cout << "Model width: " << MODEL_WIDTH(myModel) << std::endl;
+
   }
 
 private:

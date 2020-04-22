@@ -226,6 +226,28 @@ namespace biotool {
   }
 
   //
+  const float Pdb::Model::getWidth() {
+    if (width_ < 0) {
+      createConvexHull();
+      float maxWidth = 0;
+      for (std::size_t i = 0; i < convexHull_.size(); ++i) {
+        for (std::size_t j = i + 1; j < convexHull_.size(); ++j) {
+          const float dist = distance(
+            convexHull_[i].x, convexHull_[i].y, convexHull_[i].z,
+            convexHull_[j].x, convexHull_[j].y, convexHull_[j].z
+          );
+          if (dist > maxWidth) {
+            maxWidth = dist;
+          }
+        }
+      }
+      width_ = maxWidth;
+    }
+
+    return width_;
+  }
+
+  //
   void Pdb::Model::getAtomsCloseToLigand(const Pdb::Model::Chain::HetResidue& het, Pdb::Model::Chain::Residue::atoms& atoms, const float maxDistance) const {
     Pdb::Model::Chain::HetResidue::hetAtoms hetAtoms;
     het.getAtoms(hetAtoms);
@@ -316,6 +338,22 @@ namespace biotool {
   }
 
   //
+  void Pdb::Model::createConvexHull() {
+    if (convexHull_.size() == 0) {
+      using namespace quickhull;
+
+      QuickHull<float> qh;
+      std::vector<Vector3<float>> pointCloud;
+      for (auto&& [x, y, z] : coords_) {
+        pointCloud.emplace_back(x, y, z);
+      }
+
+      auto hull = qh.getConvexHull(pointCloud, true, false);
+      convexHull_ = hull.getVertexBuffer();
+    }
+  }
+
+  //
   const Pdb::Model& Pdb::findModel(const std::string& id) const {
     auto it = std::find_if(
       models_.cbegin(),
@@ -360,7 +398,7 @@ namespace biotool {
             if (modelID.empty()) {
               pdbFileCorrupted(path);
             }
-            models_.emplace_back(*this, modelID);
+            models_.emplace_back(modelID);
           }
         }
 
@@ -378,7 +416,7 @@ namespace biotool {
           if (!awaitsHetTER) {
             if (!containsModels) {
               containsModels = true;
-              models_.emplace_back(*this, "1");
+              models_.emplace_back("1");
             }
             awaitsAtomTER = true;
             try {
@@ -436,7 +474,7 @@ namespace biotool {
           if (!awaitsAtomTER) {
             if (!containsModels) {
               containsModels = true;
-              models_.emplace_back(*this, "");
+              models_.emplace_back("");
             }
             awaitsHetTER = true;
             try {

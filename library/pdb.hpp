@@ -244,10 +244,11 @@ namespace biotool {
       };
 
       using chains = std::vector<Chain>;
+      using convexHull = quickhull::VertexDataSource<float>;
 
       friend class Pdb;
 
-      Model(Pdb& pdb, const std::string& id) : pdb_(pdb), id_(id) {}
+      Model(const std::string& id) : id_(id) {}
 
       const std::string& getID() const { return id_; }
       const std::size_t getNumberOfChains() const {
@@ -261,7 +262,7 @@ namespace biotool {
       }
       const std::size_t getNumberOfAtoms() const { return atomSerials_.size(); }
       const std::size_t getNumberOfHetAtoms() const { return hetAtomSerials_.size(); }
-      const std::size_t getWidth() const;
+      const float getWidth();
 
       void getAtomsCloseToLigand(const Chain::HetResidue& het, Chain::Residue::atoms& atoms, const float maxDistance) const;
       void getResiduesCloseToLigand(const Chain::HetResidue& het, Chain::residues& residues, const float maxDistance) const;
@@ -293,8 +294,12 @@ namespace biotool {
         return std::hypot(aX - bX, aY - bY, aZ - bZ);
       }
 
-      Pdb& pdb_;
+      void createConvexHull();
+
       const std::string id_;
+
+      convexHull convexHull_;
+      float width_{-1};
 
       ints atomSerials_;
       strings atomNames_;
