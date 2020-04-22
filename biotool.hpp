@@ -37,7 +37,7 @@ SOFTWARE.
 ////////////////////////////////////////////////////////////////////////
 // BEGIN FASTA
 
-#include "../library/fasta.hpp"
+#include "library/fasta.hpp"
 
 #define FASTA Fasta
 #define MOLECULE Fasta::Molecule
@@ -51,7 +51,7 @@ SOFTWARE.
 ////////////////////////////////////////////////////////////////////////
 // BEGIN PAIR ALIGNMENT
 
-#include "../library/sequencePair.hpp"
+#include "library/sequencePair.hpp"
 
 #define SEQUENCE_PAIR SequencePair
 #define SEQUENCES(sequencePair) sequencePair.getSequences()
@@ -62,7 +62,7 @@ SOFTWARE.
 ////////////////////////////////////////////////////////////////////////
 // BEGIN PDB
 
-#include "../library/pdb.hpp"
+#include "library/pdb.hpp"
 
 #define PDB Pdb
 #define MODEL Pdb::Model

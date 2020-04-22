@@ -31,7 +31,7 @@ SOFTWARE.
 // Test showing how biotool API works
 //
 
-#include "../include/biotool.hpp"
+#include "../biotool.hpp"
 
 #include<iostream>
 
