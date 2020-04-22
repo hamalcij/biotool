@@ -35,13 +35,11 @@ SOFTWARE.
 #define PDB_HPP
 
 #include "quickhull/QuickHull.hpp"
+#include "file.hpp"
 
-#include<string>
 #include<vector>
 #include<set>
 #include<tuple>
-#include<fstream>
-#include<exception>
 #include<cctype>
 #include<cstring>
 #include<cmath>
@@ -342,8 +340,6 @@ namespace biotool {
   private:
     void parsePdbFile(const std::string& path);
     std::string getKeyword(char* line, const unsigned short from, const unsigned short to);
-    void pdbFileCorrupted(const std::string& path);
-    bool fileIsEmpty(std::ifstream& file);
 
     models models_;
 

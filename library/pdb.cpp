@@ -389,14 +389,14 @@ namespace biotool {
 
         if (section == "MODEL") {
           if (awaitsENDMDL || awaitsAtomTER || awaitsHetTER) {
-            pdbFileCorrupted(path);
+            fileCorrupted(path);
           }
           else {
             containsModels = true;
             awaitsENDMDL = true;
             std::string modelID = getKeyword(line, modelSerialFrom_, modelSerialTo_);
             if (modelID.empty()) {
-              pdbFileCorrupted(path);
+              fileCorrupted(path);
             }
             models_.emplace_back(modelID);
           }
@@ -408,7 +408,7 @@ namespace biotool {
             ++currentModelIndex;
           }
           else {
-            pdbFileCorrupted(path);
+            fileCorrupted(path);
           }
         }
 
@@ -462,11 +462,11 @@ namespace biotool {
               );
             }
             catch (...) {
-              pdbFileCorrupted(path);
+              fileCorrupted(path);
             }
           }
           else {
-            pdbFileCorrupted(path);
+            fileCorrupted(path);
           }
         }
 
@@ -520,11 +520,11 @@ namespace biotool {
               );
             }
             catch (...) {
-              pdbFileCorrupted(path);
+              fileCorrupted(path);
             }
           }
           else {
-            pdbFileCorrupted(path);
+            fileCorrupted(path);
           }
         }
 
@@ -539,7 +539,7 @@ namespace biotool {
       }
     }
     else {
-      pdbFileCorrupted(path);
+      fileCorrupted(path);
     }
 
     file.close();
@@ -560,16 +560,6 @@ namespace biotool {
     }
 
     return keyword;
-  }
-
-  //
-  void Pdb::pdbFileCorrupted(const std::string& path) {
-    throw std::ifstream::failure("PDB file at " + path + " is corrupted!");
-  }
-
-  //
-  bool Pdb::fileIsEmpty(std::ifstream& file) {
-    return file.peek() == std::ifstream::traits_type::eof();
   }
 
 }

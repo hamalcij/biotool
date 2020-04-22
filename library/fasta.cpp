@@ -52,12 +52,12 @@ namespace biotool {
             descriptions_.emplace_back(line.substr(1));
           }
           else {
-            fastaFileCorrupted(path);
+            fileCorrupted(path);
           }
         }
         else if (line.empty()) {
           if (!sequenceWasRead) {
-            fastaFileCorrupted(path);
+            fileCorrupted(path);
           }
         }
         else {
@@ -73,18 +73,10 @@ namespace biotool {
       }
     }
     else {
-      fastaFileCorrupted(path);
+      fileCorrupted(path);
     }
 
     file.close();
-  }
-
-  void Fasta::fastaFileCorrupted(const std::string& path) {
-    throw std::ifstream::failure("Fasta file at " + path + " is corrupted!");
-  }
-
-  bool Fasta::fileIsEmpty(std::ifstream& file) {
-    return file.peek() == std::ifstream::traits_type::eof();
   }
 
 }
