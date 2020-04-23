@@ -25,12 +25,13 @@ SOFTWARE.
 // biotool
 // Bioinformatics Toolbox
 //
-// src/test.hpp
+// test/test.hpp
 // Copyright (c) 2020 Hamalčík Jan
 //
 // Test showing how biotool API works
 //
 
+#include "blosum64.hpp"
 #include "../biotool.hpp"
 
 #include<iostream>
@@ -42,6 +43,7 @@ public:
   TestFasta(const std::string& file) : myFasta_(FASTA(file)) {}
 
   void performTest() {
+    std::cout << "TEST: Fasta" << std::endl;
     for (std::size_t i = 0; i < NUMBER_OF_MOLECULES(myFasta_); ++i) {
       MOLECULE myMolecule(myFasta_, i);
       std::cout << "NEW MOLECULE:" << std::endl;
@@ -62,6 +64,7 @@ public:
   TestSequencePair(const std::string& seq1, const std::string& seq2) : mySequencePair_(SEQUENCE_PAIR(seq1, seq2)) {}
 
   void performTest() {
+    std::cout << "TEST: Sequence pair" << std::endl;
     auto[sequence1, sequence2] = SEQUENCES(mySequencePair_);
     auto[editDistance, alignment] = EDIT_DISTANCE(mySequencePair_);
 
@@ -226,9 +229,43 @@ public:
     std::cout << std::endl;
 
     std::cout << "Model width: " << MODEL_WIDTH(myModel) << std::endl;
+    std::cout << std::endl;
 
   }
 
 private:
   PDB myPdb_;
+};
+
+class TestClustal {
+public:
+  TestClustal(const std::string& file) : myClustal_(CLUSTAL(file)) {}
+
+  void performTest() {
+    std::cout << "TEST: Clustal" << std::endl;
+    for (std::size_t i = 0; i < NUMBER_OF_SEQUENCES(myClustal_); ++i) {
+      std::cout << ID(myClustal_, i) << ": " << SEQUENCE(myClustal_, i) << std::endl;
+    }
+    std::cout << std::endl;
+
+    std::string myID = "UniRef90_P25035";
+    std::cout << "Found sequence of " << myID << std::endl;
+    std::cout << SEQUENCE(myClustal_, myID) << std::endl;
+    std::cout << std::endl;
+
+    for (std::size_t i = 0; i < NUMBER_OF_COLUMNS(myClustal_); ++i) {
+      for (auto&& aminoAcid : COLUMN(myClustal_, i)) {
+        std::cout << aminoAcid;
+      }
+      std::cout << std::endl;
+    }
+    std::cout << std::endl;
+
+    std::size_t index = 156;
+    std::cout << "Sum of pairs of column at index " << index << ": " << (int) SUM_OF_PAIRS(myClustal_, blosum64::triangularMatrix, blosum64::order, index) << std::endl;
+    std::cout << "Sum of pairs with triangular matrix: " << (int) SUM_OF_PAIRS(myClustal_, blosum64::triangularMatrix, blosum64::order) << std::endl;
+  }
+
+private:
+  CLUSTAL myClustal_;
 };

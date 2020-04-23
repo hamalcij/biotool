@@ -25,7 +25,7 @@ SOFTWARE.
 // biotool
 // Bioinformatics Toolbox
 //
-// src/main.cpp
+// test/main.cpp
 // Copyright (c) 2020 Hamalčík Jan
 //
 // Test showing how biotool API works
@@ -42,6 +42,9 @@ int main() {
 
   TestPdb pdb("/Users/janhamalcik/github/biotool/test/testfiles/hemoglobin.pdb");
   pdb.performTest();
+
+  TestClustal clustal("/Users/janhamalcik/github/biotool/test/testfiles/clustal");
+  clustal.performTest();
 
   return 0;
 }
