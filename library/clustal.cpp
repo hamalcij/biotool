@@ -112,7 +112,7 @@ namespace biotool {
                 }
                 while (line[i] && !isspace(line[i])) {
                   alignment_.emplace_back(
-                    std::make_unique<Clustal::column>(1, toupper(line[i]))
+                    std::make_shared<Clustal::column>(1, toupper(line[i]))
                   );
                   ++i;
                 }

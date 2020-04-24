@@ -37,11 +37,13 @@ SOFTWARE.
 #include "file.hpp"
 
 #include<vector>
+#include<map>
 #include<memory>
 #include<tuple>
 #include<cctype>
 #include<utility>
 #include<algorithm>
+#include<functional>
 
 namespace biotool {
 
@@ -51,13 +53,15 @@ namespace biotool {
     using column = std::vector<char>;
     using conservation = std::vector<char>;
     using ids = std::vector<std::string>;
-    using alignment = std::vector<std::unique_ptr<column>>;
+    using alignment = std::vector<std::shared_ptr<column>>;
+    using scores = std::map<double, std::size_t, std::greater<double>>;
+    using bestScores = std::vector<std::tuple<double, std::size_t, std::shared_ptr<column>>>;
 
     Clustal(const std::string& path) { parseClustalFile(path); }
 
     const std::size_t getNumberOfSequences() const { return ids_.size(); }
     const std::size_t getNumberOfColumns() const { return alignment_.size(); }
-    const std::string getSequence(const std::size_t i) const { return readSequenceByIndex(i); }
+    const std::string getSequence(const std::size_t i) const { return readSequenceByIndex(i - 1); }
     const std::string getSequence(const std::string& id) const;
     const std::string& getID(const std::size_t i) const { return ids_[i]; }
     const column& getColumn(const std::size_t i) const { return *alignment_[i]; }
@@ -96,6 +100,29 @@ namespace biotool {
       return sum;
     }
 
+    template<typename Matrix, typename Order>
+    const bestScores getBestScoringColumns(const Matrix& matrix, const Order& order, const std::size_t n) const {
+      bestScores best;
+      scores scores = getScores(matrix, order);
+      auto it = scores.cbegin();
+      std::size_t i = 0;
+      std::size_t numberOfColumns = n;
+      if (numberOfColumns > alignment_.size()) {
+        numberOfColumns = alignment_.size();
+      }
+
+      while (i < numberOfColumns) {
+        auto[score, index] = *it;
+        best.emplace_back(score, index, alignment_[index]);
+        ++i;
+        ++it;
+      }
+
+      return best;
+    }
+
+  private:
+
     template<typename Order>
     const std::size_t findAminoAcidPosition(const Order& order, const char aminoAcid) const {
       for (std::size_t i = 0; i < order.size(); ++i) {
@@ -104,7 +131,17 @@ namespace biotool {
       throw std::domain_error("Amino acid " + std::string(1, aminoAcid) + " not found in scoring matrix!");
     }
 
-  private:
+    template<typename Matrix, typename Order>
+    const scores getScores(const Matrix& matrix, const Order& order) const {
+      scores scores;
+
+      for (std::size_t i = 0; i < alignment_.size(); ++i) {
+        scores.emplace(std::make_pair(sumOfPairs(matrix, order, i), i));
+      }
+
+      return scores;
+    }
+
     void parseClustalFile(const std::string& path);
     const std::string readAWord(const char* line, std::size_t& i);
     const std::string readSequenceByIndex(const std::size_t i) const;

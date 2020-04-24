@@ -248,7 +248,7 @@ public:
     }
     std::cout << std::endl;
 
-    std::string myID = "UniRef90_P25035";
+    std::string myID = "UniRef90_UPI000";
     std::cout << "Found sequence of " << myID << std::endl;
     std::cout << SEQUENCE(myClustal_, myID) << std::endl;
     std::cout << std::endl;
@@ -261,9 +261,22 @@ public:
     }
     std::cout << std::endl;
 
-    std::size_t index = 156;
+    std::size_t index = 97;
     std::cout << "Sum of pairs of column at index " << index << ": " << (int) SUM_OF_PAIRS(myClustal_, blosum64::triangularMatrix, blosum64::order, index) << std::endl;
     std::cout << "Sum of pairs with triangular matrix: " << (int) SUM_OF_PAIRS(myClustal_, blosum64::triangularMatrix, blosum64::order) << std::endl;
+    std::cout << std::endl;
+
+    std::size_t n = 10;
+    std::cout << n << " best scoring columns:" << std::endl;
+    for (auto&& [score, index, column] : BEST_SCORING_COLUMNS(myClustal_, blosum64::triangularMatrix, blosum64::order, n)) {
+      std::cout << "Score: " << (int) score << "; Index: " << index;
+      std::cout << "; Column: ";
+      for (auto&& aminoAcid : *column) {
+        std::cout << aminoAcid;
+      }
+      std::cout << std::endl;
+    }
+    std::cout << std::endl;
   }
 
 private:

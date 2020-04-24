@@ -136,6 +136,7 @@ using namespace biotool;
 #define NUMBER_OF_COLUMNS(clustal) clustal.getNumberOfColumns()
 #define SUM_OF_PAIRS_3(clustal, matrix, order) clustal.sumOfPairs(matrix, order)
 #define SUM_OF_PAIRS_4(clustal, matrix, order, index) clustal.sumOfPairs(matrix, order, index)
+#define BEST_SCORING_COLUMNS(clustal, matrix, order, n) clustal.getBestScoringColumns(matrix, order, n)
 
 // END CLUSTAL
 ////////////////////////////////////////////////////////////////////////
