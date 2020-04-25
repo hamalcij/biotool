@@ -117,6 +117,7 @@ using namespace biotool;
 #define NUMBER_OF_MODELS(pdb) pdb.getNumberOfModels()
 #define NUMBER_OF_CHAINS(model) model.getNumberOfChains()
 #define NUMBER_OF_RESIDUES(unit) unit.getNumberOfResidues()
+#define NUMBER_OF_SURFACE_AND_BURIED_RESIDUES(model) model.getNumberOfSurfaceAndBuried()
 #define NUMBER_OF_HET_RESIDUES(unit) unit.getNumberOfHetResidues()
 #define NUMBER_OF_ATOMS(unit) unit.getNumberOfAtoms()
 #define NUMBER_OF_HET_ATOMS(unit) unit.getNumberOfHetAtoms()

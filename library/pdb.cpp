@@ -226,6 +226,20 @@ namespace biotool {
   }
 
   //
+  const Pdb::Model::size_tTuple Pdb::Model::getNumberOfSurfaceAndBuried() {
+    getSurfaceResidues();
+
+    /*for (auto&& residue : surfaceResidues_) {
+      std::cout << residue.getID() << " " << residue.getResidueName() << std::endl;
+    }*/
+
+    return std::make_tuple(
+      surfaceResidues_.size(),
+      getNumberOfResidues() - surfaceResidues_.size()
+    );
+  }
+
+  //
   const float Pdb::Model::getWidth() {
     if (std::get<0>(farthestAtoms_) == 0) {
       getFarthestAtoms();
@@ -421,6 +435,154 @@ namespace biotool {
   }
 
   //
+  const bool Pdb::Model::atomIsSideChain(const Chain::Residue::Atom& atom) {
+    const std::string& atomName = atom.getAtomName();
+
+    if (atomName == "N") return false;
+    if (atomName == "CA") return false;
+    if (atomName == "C") return false;
+    if (atomName == "O") return false;
+    if (atomName == "OXT") return false;
+    return true;
+  }
+
+  //
+  void Pdb::Model::getSurfaceResidues() {
+    if (surfaceResidues_.empty()) {
+      using cell = std::optional<std::tuple<Pdb::Model::Chain::Residue, Pdb::Model::Chain::Residue::Atom>>;
+      using z = std::vector<cell>;
+      using yz = std::vector<z>;
+      using xyz = std::vector<yz>;
+      using cellCoords = std::tuple<std::size_t, std::size_t, std::size_t>;
+
+      const auto [minX, minY, minZ] = getMinCoords();
+      const float cellSize = solvent_;
+      const std::size_t gridSize = static_cast<std::size_t>(getDiameter() / cellSize) + 10;
+      bool discovered[gridSize][gridSize][gridSize];
+
+      xyz protein;
+      for (std::size_t i = 0; i < gridSize; ++i) {
+        yz yCoord;
+        for (std::size_t j = 0; j < gridSize; ++j) {
+          yCoord.emplace_back(gridSize);
+        }
+        protein.push_back(std::move(yCoord));
+      }
+
+      Pdb::Model::chains chains;
+      getChains(chains);
+      for (auto&& chain : chains) {
+        Pdb::Model::Chain::residues residues;
+        chain.getResidues(residues);
+        for (auto&& residue : residues) {
+          Pdb::Model::Chain::Residue::atoms atoms;
+          residue.getAtoms(atoms);
+          for (auto&& atom : atoms) {
+            auto [x, y, z] = atom.getCoords();
+            std::size_t xPos = static_cast<int>((x - minX) / cellSize) + 5;
+            std::size_t yPos = static_cast<int>((y - minY) / cellSize) + 5;
+            std::size_t zPos = static_cast<int>((z - minZ) / cellSize) + 5;
+            protein[xPos][yPos][zPos] = std::make_tuple(residue, atom);
+          }
+        }
+      }
+
+
+      // BFS over free space
+      // Water molecule occupies 4 cells:
+      //  ||
+      // -•*-
+      // -**-
+      //  ||
+      // Where '•' references current cellCoords, '*' other solvent's position
+      // and '-' or '|' are relative position that need to be checked for protein
+      // Third dimension is analogical
+      std::deque<cellCoords> queue;
+      queue.emplace_front(std::make_tuple(0, 0, 0));
+      discovered[0][0][0] = true;
+      while (!queue.empty()) {
+        auto [x, y, z] = queue.back();
+        queue.pop_back();
+        if (x > 0) {
+          if (protein[x - 1][y][z].has_value()) {
+            auto [residue, atom] = *protein[x - 1][y][z];
+            if (atomIsSideChain(atom)) surfaceResidues_.insert(residue);
+          }
+          else if (!discovered[x - 1][y][z]) {
+            discovered[x - 1][y][z] = true;
+            queue.emplace_front(std::make_tuple(x - 1, y, z));
+          }
+        }
+        if (x < gridSize - 1) {
+          if (protein[x + 1][y][z].has_value()) {
+            auto [residue, atom] = *protein[x + 1][y][z];
+            if (atomIsSideChain(atom)) surfaceResidues_.insert(residue);
+          }
+          else if (!discovered[x + 1][y][z]) {
+            discovered[x + 1][y][z] = true;
+            queue.emplace_front(std::make_tuple(x + 1, y, z));
+          }
+        }
+        if (y > 0) {
+          if (protein[x][y - 1][z].has_value()) {
+            auto [residue, atom] = *protein[x][y - 1][z];
+            if (atomIsSideChain(atom)) surfaceResidues_.insert(residue);
+          }
+          else if (!discovered[x][y - 1][z]) {
+            discovered[x][y - 1][z] = true;
+            queue.emplace_front(std::make_tuple(x, y - 1, z));
+          }
+        }
+        if (y < gridSize - 1) {
+          if (protein[x][y + 1][z].has_value()) {
+            auto [residue, atom] = *protein[x][y + 1][z];
+            if (atomIsSideChain(atom)) surfaceResidues_.insert(residue);
+          }
+          else if (!discovered[x][y + 1][z]) {
+            discovered[x][y + 1][z] = true;
+            queue.emplace_front(std::make_tuple(x, y + 1, z));
+          }
+        }
+        if (z > 0) {
+          if (protein[x][y][z - 1].has_value()) {
+            auto [residue, atom] = *protein[x][y][z - 1];
+            if (atomIsSideChain(atom)) surfaceResidues_.insert(residue);
+          }
+          else if (!discovered[x][y][z - 1]) {
+            discovered[x][y][z - 1] = true;
+            queue.emplace_front(std::make_tuple(x, y, z - 1));
+          }
+        }
+        if (z < gridSize - 1) {
+          if (protein[x][y][z + 1].has_value()) {
+            auto [residue, atom] = *protein[x][y][z + 1];
+            if (atomIsSideChain(atom)) surfaceResidues_.insert(residue);
+          }
+          else if (!discovered[x][y][z + 1]) {
+            discovered[x][y][z + 1] = true;
+            queue.emplace_front(std::make_tuple(x, y, z + 1));
+          }
+        }
+      }
+    }
+  }
+
+  //
+  const Pdb::Model::coords Pdb::Model::getMinCoords() const {
+    float minX = std::numeric_limits<float>::max();
+    float minY = std::numeric_limits<float>::max();
+    float minZ = std::numeric_limits<float>::max();
+
+    for (auto&& [x, y, z] : coords_) {
+      if (x < minX) minX = x;
+      if (y < minY) minY = y;
+      if (z < minZ) minZ = z;
+    }
+
+    return std::make_tuple(minX, minY, minZ);
+  }
+
+  //
   const Pdb::Model& Pdb::findModel(const std::string& id) const {
     auto it = std::find_if(
       models_.cbegin(),
@@ -541,7 +703,7 @@ namespace biotool {
           if (!awaitsAtomTER) {
             if (!containsModels) {
               containsModels = true;
-              models_.emplace_back("");
+              models_.emplace_back("1");
             }
             awaitsHetTER = true;
             try {
@@ -621,7 +783,8 @@ namespace biotool {
     std::string keyword = "";
 
     for (unsigned short i = from; i <= to; ++i) {
-      if (!isspace(line[i])) {
+      if (!line[i]) break;
+      else if (!isspace(line[i])) {
         keyword += line[i];
       }
     }

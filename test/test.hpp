@@ -232,6 +232,10 @@ public:
     std::cout << "Model diameter: " << MODEL_DIAMETER(myModel) << std::endl;
     std::cout << std::endl;
 
+    auto [surface, buried] = NUMBER_OF_SURFACE_AND_BURIED_RESIDUES(myModel);
+    std::cout << "Residues in model: " << NUMBER_OF_RESIDUES(myModel) << std::endl;
+    std::cout << "Surface residues: " << surface << "; Buried residues: " << buried << std::endl;
+    std::cout << std::endl;
   }
 
 private:

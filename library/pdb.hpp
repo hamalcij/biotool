@@ -39,10 +39,13 @@ SOFTWARE.
 
 #include<vector>
 #include<set>
+#include<deque>
 #include<tuple>
 #include<cctype>
 #include<cstring>
 #include<cmath>
+#include<limits>
+#include<optional>
 
 namespace biotool {
 
@@ -64,6 +67,7 @@ namespace biotool {
       using floats = std::vector<float>;
       using ints = std::vector<std::string>;
       using strings = std::vector<std::string>;
+      using size_tTuple = std::tuple<std::size_t, std::size_t>;
 
       ////////////////////////////////////////////////////////////////////////
       // BEGIN CHAIN
@@ -92,6 +96,10 @@ namespace biotool {
               model_(model),
               index_(index)
             {}
+
+            Atom operator=(const Atom& other) noexcept {
+              return other;
+            }
 
             const std::string& getID() const { return model_.atomSerials_[index_]; }
             const std::string& getAtomName() const { return model_.atomNames_[index_]; }
@@ -122,6 +130,25 @@ namespace biotool {
             indexFrom_(indexFrom),
             indexTo_(indexTo)
           {}
+
+          Residue operator=(const Residue& other) noexcept {
+            return other;
+          }
+
+          const bool operator==(const Residue& other) const noexcept {
+            return model_ == other.model_ && indexFrom_ == other.indexFrom_ && indexTo_ == other.indexTo_;
+          }
+
+          const bool operator!=(const Residue& other) const noexcept {
+            return model_ != other.model_ || indexFrom_ != other.indexFrom_ || indexTo_ != other.indexTo_;
+          }
+
+          const bool operator<(const Residue& other) const noexcept {
+            if (model_ == other.model_) {
+              return indexFrom_ < other.indexFrom_;
+            }
+            return model_ < other.model_;
+          }
 
           const std::string& getID() const { return model_.resSeqs_[indexFrom_]; }
           const std::string& getResidueName() const { return model_.resNames_[indexFrom_]; }
@@ -234,14 +261,15 @@ namespace biotool {
       // END CHAIN
       ///////////////////////////////////////////////////////////////////////
 
-      struct ResidueComparator {
+      /*struct ResidueComparator {
       public:
         bool operator()(const Chain::Residue& x, const Chain::Residue& y) const {
           return std::strcmp(x.getID().c_str(), y.getID().c_str()) < 0;
         }
-      };
+      };*/
 
       using chains = std::vector<Chain>;
+      using residues = std::set<Chain::Residue>;
       using fVector3 = quickhull::Vector3<float>;
       using pairOfConvexAtoms = std::tuple<float, fVector3, fVector3>;
       using convexTriangle = std::tuple<fVector3&, fVector3&, fVector3&>;
@@ -250,6 +278,18 @@ namespace biotool {
       friend class Pdb;
 
       Model(const std::string& id) : id_(id) {}
+
+      const bool operator==(const Model& other) const noexcept {
+        return id_ == other.id_;
+      }
+
+      const bool operator!=(const Model& other) const noexcept {
+        return id_ != other.id_;
+      }
+
+      const bool operator<(const Model& other) const noexcept {
+        return std::strcmp(id_.c_str(), other.id_.c_str()) < 0;
+      }
 
       const std::string& getID() const { return id_; }
       const std::size_t getNumberOfChains() const {
@@ -263,6 +303,7 @@ namespace biotool {
       }
       const std::size_t getNumberOfAtoms() const { return atomSerials_.size(); }
       const std::size_t getNumberOfHetAtoms() const { return hetAtomSerials_.size(); }
+      const size_tTuple getNumberOfSurfaceAndBuried();
       const float getWidth();
       const float getDiameter();
 
@@ -303,9 +344,14 @@ namespace biotool {
       );
       void getFarthestAtoms();;
       const bool createConvexHull();
+      const bool atomIsSideChain(const Chain::Residue::Atom& atom);
+
+      void getSurfaceResidues();
+      const coords getMinCoords() const;
 
       const std::string id_;
 
+      residues surfaceResidues_;
       convexHull convexHull_;
       pairOfConvexAtoms farthestAtoms_;
       float diameter_{0};
@@ -335,6 +381,8 @@ namespace biotool {
       floats hetTempFactors_;
       strings hetElements_;
       strings hetCharges_;
+
+      static constexpr float solvent_{2.75}; // H2O
     };
 
     // END MODEL
