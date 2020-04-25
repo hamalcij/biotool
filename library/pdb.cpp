@@ -227,24 +227,49 @@ namespace biotool {
 
   //
   const float Pdb::Model::getWidth() {
-    if (width_ < 0) {
-      createConvexHull();
-      float maxWidth = 0;
-      for (std::size_t i = 0; i < convexHull_.size(); ++i) {
-        for (std::size_t j = i + 1; j < convexHull_.size(); ++j) {
-          const float dist = distance(
-            convexHull_[i].x, convexHull_[i].y, convexHull_[i].z,
-            convexHull_[j].x, convexHull_[j].y, convexHull_[j].z
-          );
-          if (dist > maxWidth) {
-            maxWidth = dist;
-          }
-        }
-      }
-      width_ = maxWidth;
+    if (std::get<0>(farthestAtoms_) == 0) {
+      getFarthestAtoms();
     }
 
-    return width_;
+    return std::get<0>(farthestAtoms_);
+  }
+
+  //
+  const float Pdb::Model::getDiameter() {
+    if (diameter_ == 0) {
+      getFarthestAtoms();
+      auto&[diam, atom1, atom2] = farthestAtoms_;
+      float radius = diam / 2.0;
+      Pdb::Model::fVector3 center(
+        (atom1.x + atom2.x) / 2.0,
+        (atom1.y + atom2.y) / 2.0,
+        (atom1.z + atom2.z) / 2.0
+      );
+
+      for (;;) {
+        Pdb::Model::fVector3 mostDistantAtom;
+        float maxDistance = 0;
+        for (auto&& atom : convexHull_) {
+          const float dist = atom.getDistanceTo(center);
+          if (dist > maxDistance) {
+            maxDistance = dist;
+            mostDistantAtom.x = atom.x;
+            mostDistantAtom.y = atom.y;
+            mostDistantAtom.z = atom.z;
+          }
+        }
+        if (maxDistance > radius) {
+          center = circumcenter(atom1, atom2, mostDistantAtom);
+          radius *= 1.00001;
+        }
+        else {
+          diameter_ = radius * 2.0;
+          break;
+        }
+      }
+    }
+
+    return diameter_;
   }
 
   //
@@ -338,7 +363,45 @@ namespace biotool {
   }
 
   //
-  void Pdb::Model::createConvexHull() {
+  Pdb::Model::fVector3 Pdb::Model::circumcenter(
+    const Pdb::Model::fVector3& a,
+    const Pdb::Model::fVector3& b,
+    const Pdb::Model::fVector3& c
+  ) {
+
+    const float ab = a.getDistanceTo(b);
+    const float bc = b.getDistanceTo(c);
+    const float ca = c.getDistanceTo(a);
+
+    const float alpha = bc*bc * (ca*ca + ab*ab - bc*bc);
+    const float beta = ca*ca * (ab*ab + bc*bc - ca*ca);
+    const float gamma = ab*ab * (bc*bc + ca*ca - ab*ab);
+
+    const float x = (alpha*a.x + beta*b.x + gamma*c.x) / (alpha + beta + gamma);
+    const float y = (alpha*a.y + beta*b.y + gamma*c.y) / (alpha + beta + gamma);
+    const float z = (alpha*a.z + beta*b.z + gamma*c.z) / (alpha + beta + gamma);
+
+    return Pdb::Model::fVector3(x, y, z);
+  }
+
+  //
+  void Pdb::Model::getFarthestAtoms() {
+    if (createConvexHull()) {
+      for (std::size_t i = 0; i < convexHull_.size(); ++i) {
+        for (std::size_t j = i + 1; j < convexHull_.size(); ++j) {
+          const float dist = convexHull_[i].getDistanceTo(convexHull_[j]);
+          if (dist > std::get<0>(farthestAtoms_)) {
+            std::get<0>(farthestAtoms_) = dist;
+            std::get<1>(farthestAtoms_) = convexHull_[i];
+            std::get<2>(farthestAtoms_) = convexHull_[j];
+          }
+        }
+      }
+    }
+  }
+
+  //
+  const bool Pdb::Model::createConvexHull() {
     if (convexHull_.size() == 0) {
       using namespace quickhull;
 
@@ -348,9 +411,13 @@ namespace biotool {
         pointCloud.emplace_back(x, y, z);
       }
 
-      auto hull = qh.getConvexHull(pointCloud, true, false);
+      auto hull = qh.getConvexHull(pointCloud, false, false);
       convexHull_ = hull.getVertexBuffer();
+
+      return true;
     }
+
+    return false;
   }
 
   //

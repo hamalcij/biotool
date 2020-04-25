@@ -229,6 +229,7 @@ public:
     std::cout << std::endl;
 
     std::cout << "Model width: " << MODEL_WIDTH(myModel) << std::endl;
+    std::cout << "Model diameter: " << MODEL_DIAMETER(myModel) << std::endl;
     std::cout << std::endl;
 
   }
