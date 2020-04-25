@@ -487,16 +487,6 @@ namespace biotool {
         }
       }
 
-
-      // BFS over free space
-      // Water molecule occupies 4 cells:
-      //  ||
-      // -•*-
-      // -**-
-      //  ||
-      // Where '•' references current cellCoords, '*' other solvent's position
-      // and '-' or '|' are relative position that need to be checked for protein
-      // Third dimension is analogical
       std::deque<cellCoords> queue;
       queue.emplace_front(std::make_tuple(0, 0, 0));
       discovered[0][0][0] = true;
