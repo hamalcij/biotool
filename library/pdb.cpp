@@ -236,6 +236,58 @@ namespace biotool {
   }
 
   //
+  const Pdb::Model::statsTuple Pdb::Model::getSurfaceAndBuriedStats() {
+    if (surfaceStats_.empty()) {
+      getSurfaceResidues();
+
+      Pdb::Model::residuesSet buried;
+      Pdb::Model::chains chains;
+      getChains(chains);
+      for (auto&& chain : chains) {
+        Pdb::Model::Chain::residues residues;
+        chain.getResidues(residues);
+        for (auto&& residue : residues) {
+          auto search = surfaceResidues_.find(residue);
+          if (search == surfaceResidues_.end()) {
+            buried.insert(residue);
+          }
+        }
+      }
+
+      surfaceStats_.insert({"ALA", 0});
+      surfaceStats_.insert({"ARG", 0});
+      surfaceStats_.insert({"ASN", 0});
+      surfaceStats_.insert({"ASP", 0});
+      surfaceStats_.insert({"CYS", 0});
+      surfaceStats_.insert({"GLN", 0});
+      surfaceStats_.insert({"GLU", 0});
+      surfaceStats_.insert({"GLY", 0});
+      surfaceStats_.insert({"HIS", 0});
+      surfaceStats_.insert({"ILE", 0});
+      surfaceStats_.insert({"LEU", 0});
+      surfaceStats_.insert({"LYS", 0});
+      surfaceStats_.insert({"MET", 0});
+      surfaceStats_.insert({"PHE", 0});
+      surfaceStats_.insert({"PRO", 0});
+      surfaceStats_.insert({"SER", 0});
+      surfaceStats_.insert({"THR", 0});
+      surfaceStats_.insert({"TRP", 0});
+      surfaceStats_.insert({"TYR", 0});
+      surfaceStats_.insert({"VAL", 0});
+      buriedStats_ = surfaceStats_;
+
+      for (auto&& residue : surfaceResidues_) {
+        ++surfaceStats_[residue.getResidueName()];
+      }
+      for (auto&& residue : buried) {
+        ++buriedStats_[residue.getResidueName()];
+      }
+    }
+
+    return std::make_tuple(surfaceStats_, buriedStats_);
+  }
+
+  //
   const float Pdb::Model::getWidth() {
     if (std::get<0>(farthestAtoms_) == 0) {
       getFarthestAtoms();

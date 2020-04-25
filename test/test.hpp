@@ -90,7 +90,7 @@ public:
   TestPdb(const std::string& path) : myPdb_(PDB(path)) {}
 
   void performTest() {
-    std::cout << "PDB" << std::endl;
+    /*std::cout << "PDB" << std::endl;
     std::cout << "Models: " << NUMBER_OF_MODELS(myPdb_) << std::endl;
 
     for (auto&& model : GET_MODELS(myPdb_)) {
@@ -151,10 +151,10 @@ public:
         }
       }
     }
-    std::cout << std::endl;
+    std::cout << std::endl;*/
 
     MODEL myModel = FIND_MODEL(myPdb_, "1");
-    std::cout << "Found model " << ID(myModel);
+    /*std::cout << "Found model " << ID(myModel);
     std::cout << "; Chains: " << NUMBER_OF_CHAINS(myModel);
     std::cout << "; Residues: " << NUMBER_OF_RESIDUES(myModel);
     std::cout << "; Atoms: " << NUMBER_OF_ATOMS(myModel);
@@ -226,7 +226,7 @@ public:
     std::cout << "; (" << hetX << ", " << hetY << ", " << hetZ << ")";
     std::cout << "; Element: " << ELEMENT(myHetAtom);
     std::cout << "; Charge: " << CHARGE(myHetAtom);
-    std::cout << std::endl;
+    std::cout << std::endl;*/
 
     std::cout << "Model width: " << MODEL_WIDTH(myModel) << std::endl;
     std::cout << "Model diameter: " << MODEL_DIAMETER(myModel) << std::endl;
@@ -236,6 +236,16 @@ public:
     std::cout << "Residues in model: " << NUMBER_OF_RESIDUES(myModel) << std::endl;
     std::cout << "Surface residues: " << surface << "; Buried residues: " << buried << std::endl;
     std::cout << std::endl;
+
+    auto [surfaceStats, buriedStats] = GET_SURFACE_AND_BURIED_STATS(myModel);
+    std::cout << "Statistics for surface residues:" << std::endl;
+    for (auto&& [name, count] : surfaceStats) {
+      std::cout << name << " " << count << std::endl;
+    }
+    std::cout << "Statistics for buried residues:" << std::endl;
+    for (auto&& [name, count] : buriedStats) {
+      std::cout << name << " " << count << std::endl;
+    }
   }
 
 private:

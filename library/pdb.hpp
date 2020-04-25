@@ -40,12 +40,14 @@ SOFTWARE.
 #include<vector>
 #include<set>
 #include<deque>
+#include<unordered_map>
 #include<tuple>
 #include<cctype>
 #include<cstring>
 #include<cmath>
 #include<limits>
 #include<optional>
+#include<algorithm>
 
 namespace biotool {
 
@@ -261,15 +263,10 @@ namespace biotool {
       // END CHAIN
       ///////////////////////////////////////////////////////////////////////
 
-      /*struct ResidueComparator {
-      public:
-        bool operator()(const Chain::Residue& x, const Chain::Residue& y) const {
-          return std::strcmp(x.getID().c_str(), y.getID().c_str()) < 0;
-        }
-      };*/
-
       using chains = std::vector<Chain>;
       using residuesSet = std::set<Chain::Residue>;
+      using residueStats = std::unordered_map<std::string, std::size_t>;
+      using statsTuple = std::tuple<residueStats, residueStats>;
       using fVector3 = quickhull::Vector3<float>;
       using pairOfConvexAtoms = std::tuple<float, fVector3, fVector3>;
       using convexTriangle = std::tuple<fVector3&, fVector3&, fVector3&>;
@@ -303,7 +300,10 @@ namespace biotool {
       }
       const std::size_t getNumberOfAtoms() const { return atomSerials_.size(); }
       const std::size_t getNumberOfHetAtoms() const { return hetAtomSerials_.size(); }
+
       const size_tTuple getNumberOfSurfaceAndBuried();
+      const statsTuple getSurfaceAndBuriedStats();
+
       const float getWidth();
       const float getDiameter();
 
@@ -352,6 +352,8 @@ namespace biotool {
       const std::string id_;
 
       residuesSet surfaceResidues_;
+      residueStats surfaceStats_;
+      residueStats buriedStats_;
       convexHull convexHull_;
       pairOfConvexAtoms farthestAtoms_;
       float diameter_{0};
