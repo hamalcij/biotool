@@ -34,17 +34,17 @@ SOFTWARE.
 #include "test.hpp"
 
 int main() {
-  //TestFasta fasta("/Users/janhamalcik/github/biotool/test/testfiles/fasta");
-  //fasta.performTest();
+  TestFasta fasta("/Users/janhamalcik/github/biotool/test/testfiles/fasta");
+  fasta.performTest();
 
-  //TestSequencePair sequencePair("SHORTS", "HORSTS");
-  //sequencePair.performTest();
+  TestSequencePair sequencePair("SHORTS", "HORSTS");
+  sequencePair.performTest();
 
   TestPdb pdb("/Users/janhamalcik/github/biotool/test/testfiles/hemoglobin.pdb");
   pdb.performTest();
 
-  //TestClustal clustal("/Users/janhamalcik/github/biotool/test/testfiles/clustal");
-  //clustal.performTest();
+  TestClustal clustal("/Users/janhamalcik/github/biotool/test/testfiles/clustal");
+  clustal.performTest();
 
   return 0;
 }
