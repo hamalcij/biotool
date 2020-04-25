@@ -288,6 +288,28 @@ namespace biotool {
   }
 
   //
+  const Pdb::Model::floatTuple Pdb::Model::getPortionOfPolarResidues() {
+    std::set<std::string> polarResidues = {
+      "ARG", "ASN", "ASP", "GLN", "GLU", "HIS", "LYS", "SER", "THR", "TYR"
+    };
+
+    getSurfaceAndBuriedStats();
+    auto [surfaceCount, buriedCount] = getNumberOfSurfaceAndBuried();
+    std::size_t polarSurfaceCount = 0;
+    std::size_t polarBuriedCount = 0;
+
+    for (auto&& polar : polarResidues) {
+      polarSurfaceCount += surfaceStats_[polar];
+      polarBuriedCount += buriedStats_[polar];
+    }
+
+    return std::make_tuple(
+      static_cast<float>(polarSurfaceCount) / static_cast<float>(surfaceCount),
+      static_cast<float>(polarBuriedCount) / static_cast<float>(buriedCount)
+    );
+  }
+
+  //
   const float Pdb::Model::getWidth() {
     if (std::get<0>(farthestAtoms_) == 0) {
       getFarthestAtoms();

@@ -124,6 +124,7 @@ using namespace biotool;
 #define GET_ATOMS_CLOSE_TO_LIGAND(model, ligand, atoms, maxDistance) model.getAtomsCloseToLigand(ligand, atoms, maxDistance)
 #define GET_RESIDUES_CLOSE_TO_LIGAND(model, ligand, residues, maxDistance) model.getResiduesCloseToLigand(ligand, residues, maxDistance)
 #define GET_SURFACE_AND_BURIED_STATS(model) model.getSurfaceAndBuriedStats()
+#define GET_PORTION_OF_POLAR_SURFACE_AND_BURIED(model) model.getPortionOfPolarResidues()
 #define MODEL_WIDTH(model) model.getWidth()
 #define MODEL_DIAMETER(model) model.getDiameter()
 

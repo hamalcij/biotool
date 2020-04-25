@@ -246,6 +246,12 @@ public:
     for (auto&& [name, count] : buriedStats) {
       std::cout << name << " " << count << std::endl;
     }
+
+    auto [polarSurfacePortion, polarBuriedPortion] = GET_PORTION_OF_POLAR_SURFACE_AND_BURIED(myModel);
+    std::cout << "Portion of polar residues on the surface: " << polarSurfacePortion;
+    std::cout << "; Portion of polar residues in the core: " << polarBuriedPortion;
+    std::cout << std::endl;
+    std::cout << std::endl;
   }
 
 private:

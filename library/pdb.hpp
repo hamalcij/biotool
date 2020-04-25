@@ -70,6 +70,13 @@ namespace biotool {
       using ints = std::vector<std::string>;
       using strings = std::vector<std::string>;
       using size_tTuple = std::tuple<std::size_t, std::size_t>;
+      using floatTuple = std::tuple<float, float>;
+      using residueStats = std::unordered_map<std::string, std::size_t>;
+      using statsTuple = std::tuple<residueStats, residueStats>;
+      using fVector3 = quickhull::Vector3<float>;
+      using pairOfConvexAtoms = std::tuple<float, fVector3, fVector3>;
+      using convexTriangle = std::tuple<fVector3&, fVector3&, fVector3&>;
+      using convexHull = quickhull::VertexDataSource<float>;
 
       ////////////////////////////////////////////////////////////////////////
       // BEGIN CHAIN
@@ -265,12 +272,6 @@ namespace biotool {
 
       using chains = std::vector<Chain>;
       using residuesSet = std::set<Chain::Residue>;
-      using residueStats = std::unordered_map<std::string, std::size_t>;
-      using statsTuple = std::tuple<residueStats, residueStats>;
-      using fVector3 = quickhull::Vector3<float>;
-      using pairOfConvexAtoms = std::tuple<float, fVector3, fVector3>;
-      using convexTriangle = std::tuple<fVector3&, fVector3&, fVector3&>;
-      using convexHull = quickhull::VertexDataSource<float>;
 
       friend class Pdb;
 
@@ -303,6 +304,7 @@ namespace biotool {
 
       const size_tTuple getNumberOfSurfaceAndBuried();
       const statsTuple getSurfaceAndBuriedStats();
+      const floatTuple getPortionOfPolarResidues();
 
       const float getWidth();
       const float getDiameter();
