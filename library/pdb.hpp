@@ -269,7 +269,7 @@ namespace biotool {
       };*/
 
       using chains = std::vector<Chain>;
-      using residues = std::set<Chain::Residue>;
+      using residuesSet = std::set<Chain::Residue>;
       using fVector3 = quickhull::Vector3<float>;
       using pairOfConvexAtoms = std::tuple<float, fVector3, fVector3>;
       using convexTriangle = std::tuple<fVector3&, fVector3&, fVector3&>;
@@ -351,7 +351,7 @@ namespace biotool {
 
       const std::string id_;
 
-      residues surfaceResidues_;
+      residuesSet surfaceResidues_;
       convexHull convexHull_;
       pairOfConvexAtoms farthestAtoms_;
       float diameter_{0};
