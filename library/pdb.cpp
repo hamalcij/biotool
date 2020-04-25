@@ -229,10 +229,6 @@ namespace biotool {
   const Pdb::Model::size_tTuple Pdb::Model::getNumberOfSurfaceAndBuried() {
     getSurfaceResidues();
 
-    /*for (auto&& residue : surfaceResidues_) {
-      std::cout << residue.getID() << " " << residue.getResidueName() << std::endl;
-    }*/
-
     return std::make_tuple(
       surfaceResidues_.size(),
       getNumberOfResidues() - surfaceResidues_.size()
