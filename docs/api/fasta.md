@@ -9,7 +9,7 @@
 
 # Fasta API Documentation
 
-Following macros will conveniently let you use `biotool`' Fasta API:
+Following macros will conveniently let you use `biotool`'s Fasta API:
 
 ## `FASTA`
 
@@ -178,6 +178,6 @@ for (std::size_t i = 0; i < NUMBER_OF_MOLECULES(myFasta); ++i) {
 
 ---
 
-[Next](sequencePair)
+[Next](sequencePair.md)
 
 [Up](README.md)

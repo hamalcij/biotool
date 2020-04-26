@@ -9,7 +9,7 @@
 
 # PDB API Documentation
 
-Following macros will conveniently let you use `biotool`' PDB API:
+Following macros will conveniently let you use `biotool`'s PDB API:
 
 ## `PDB`
 

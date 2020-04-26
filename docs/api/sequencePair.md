@@ -9,7 +9,7 @@
 
 # Sequence Pair API Documentation
 
-Following macros will conveniently let you use `biotool`' API to work
+Following macros will conveniently let you use `biotool`'s API to work
 with sequence pairs:
 
 ## `SEQUENCE_PAIR`
