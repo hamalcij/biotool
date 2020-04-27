@@ -61,7 +61,7 @@ namespace biotool {
 
     const std::size_t getNumberOfSequences() const { return ids_.size(); }
     const std::size_t getNumberOfColumns() const { return alignment_.size(); }
-    const std::string getSequence(const std::size_t i) const { return readSequenceByIndex(i - 1); }
+    const std::string getSequence(const std::size_t i) const { return readSequenceByIndex(i); }
     const std::string getSequence(const std::string& id) const;
     const std::string& getID(const std::size_t i) const { return ids_[i]; }
     const column& getColumn(const std::size_t i) const { return *alignment_[i]; }
