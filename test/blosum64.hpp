@@ -28,7 +28,7 @@ SOFTWARE.
 // test/blosum64.hpp
 // Copyright (c) 2020 Hamalčík Jan
 //
-// Implements BLOSUM64 matrices in two ways
+// Implements BLOSUM64 triangular matrix
 //
 
 #ifndef BLOSUM_64_HPP
