@@ -35,6 +35,11 @@ SOFTWARE.
 
 namespace biotool {
 
+  /*
+    Goes through each line of a .fasta file and enters parsed data to descriptions_ and sequences_ private variables.
+    Parameters:
+    * path: path to a .fasta file which shall be parsed
+  */
   void Fasta::parseFastaFile(const std::string& path) {
     std::ifstream file(path);
 

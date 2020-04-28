@@ -47,6 +47,9 @@ SOFTWARE.
 
 namespace biotool {
 
+  /*
+    Parses a clustal file and provides methods to its analysis
+  */
   class Clustal {
   public:
 
@@ -57,6 +60,11 @@ namespace biotool {
     using scores = std::map<double, std::size_t, std::greater<double>>;
     using bestScores = std::vector<std::tuple<double, std::size_t, std::shared_ptr<column>>>;
 
+    /*
+      Clustal file ctor
+      Parameters:
+      * path: path to a clustal file which shall be parsed
+    */
     Clustal(const std::string& path) { parseClustalFile(path); }
 
     const std::size_t getNumberOfSequences() const { return ids_.size(); }
@@ -66,6 +74,14 @@ namespace biotool {
     const std::string& getID(const std::size_t i) const { return ids_[i]; }
     const column& getColumn(const std::size_t i) const { return *alignment_[i]; }
 
+    /*
+      Computes the score of one MSA column with the Sum of pairs metric.
+      Parameters:
+      * matrix: (triangular) substitution matrix of size 20x20.
+      * order: container defining the residue type order of rows and columns of matrix.
+      * index: index of a MSA column.
+      Returns: The Sum of pairs column score.
+    */
     template<typename Matrix, typename Order>
     const double sumOfPairs(const Matrix& matrix, const Order& order, const std::size_t index) const {
       double sum = 0;
@@ -89,6 +105,13 @@ namespace biotool {
       return sum;
     }
 
+    /*
+      Computes the score of the whole MSA with the Sum of pairs metric.
+      Parameters:
+      * matrix: (triangular) substitution matrix of size 20x20.
+      * order: container defining the residue type order of rows and columns of matrix.
+      Returns: The Sum of pairs MSA score.
+    */
     template<typename Matrix, typename Order>
     const double sumOfPairs(const Matrix& matrix, const Order& order) const {
       double sum = 0;
@@ -100,6 +123,14 @@ namespace biotool {
       return sum;
     }
 
+    /*
+      Computes the best n scoring columns of the MSA with the Sum of pairs metric.
+      Parameters:
+      * matrix: (triangular) substitution matrix of size 20x20.
+      * order: container defining the residue type order of rows and columns of matrix.
+      * n: the number of best scoring columns.
+      Returns: Best n scoring columns of the MSA.
+    */
     template<typename Matrix, typename Order>
     const bestScores getBestScoringColumns(const Matrix& matrix, const Order& order, const std::size_t n) const {
       bestScores best;

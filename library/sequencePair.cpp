@@ -35,6 +35,10 @@ SOFTWARE.
 
 namespace biotool {
 
+  /*
+    Computes Hamming distance of private variables sequence1_ and sequence2_, if they have the same length.
+    Returns: The Hamming distance.
+  */
   const std::size_t SequencePair::getHammingDistance() const {
     checkSequenceLength();
 
@@ -48,6 +52,11 @@ namespace biotool {
     return hammingDistance;
   }
 
+  /*
+    Computes edit distance of private variables sequence1_ and sequence2_ and recreates all optimal alignments.
+    Dynamic programming is used, each penalty is scored 1, backtracking is used to obtain all optimal alignments.
+    Returns: The edit distance and all alignments yielding the same edit distance.
+  */
   const SequencePair::alignment SequencePair::getEditDistance() const {
     const std::size_t sequence1Size = sequence1_.length() + 1;
     const std::size_t sequence2Size = sequence2_.length() + 1;
@@ -154,12 +163,24 @@ namespace biotool {
     return std::make_tuple(dpMatrix[sequence1Size - 1][sequence2Size - 1], alignments);
   }
 
+  /*
+    Checks if the private variables sequence1_ and sequence2_ have the same length.
+    Used to check if Hamming distance may be computed.
+  */
   void SequencePair::checkSequenceLength() const {
     if (sequence1_.length() != sequence2_.length()) {
       throw std::length_error("Hamming distance can only be calculated for sequences with same length!");
     }
   }
 
+  /*
+    Checks which of the 3 values considered in 2D dynamic programming and backtracking is the smallest.
+    Parameters:
+    * insertion: value of the cell at position [I-1][J] of the DP matrix.
+    * deletion: value of the cell at position [I][J-1] of the DP matrix.
+    * substitution: value of the cell at position [I-1][J-1] of the DP matrix.
+    Returns: The lowest value of insertion, deletion and substitution.
+  */
   const std::size_t SequencePair::dpMin(const std::size_t& insertion, const std::size_t& deletion, const std::size_t& substitution) const {
     std::size_t min = insertion;
     if (min > deletion) {

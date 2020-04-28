@@ -44,6 +44,7 @@ using namespace biotool;
 ////////////////////////////////////////////////////////////////////////
 // BEGIN OVERLOADED
 
+// This code allows for overloading macros with different number of parameter
 #define BT_CAT(A, B) A ## B
 #define BT_EXPAND(...) __VA_ARGS__
 #define BT_VA_ARGS_SIZE(...) BT_EXPAND(BT_APPLY_ARG_N((BT_ZERO_ARGS_DETECT(__VA_ARGS__), BT_RSEQ_N)))
@@ -55,6 +56,8 @@ using namespace biotool;
 #define BT_OVERLOAD_SELECT(NAME, NUM) BT_CAT( NAME ## _, NUM)
 #define BT_MACRO_OVERLOAD(NAME, ...) BT_OVERLOAD_SELECT(NAME, BT_VA_ARGS_SIZE(__VA_ARGS__))(__VA_ARGS__)
 
+// Following macros are overloaded with different number of parameters.
+// Macro EXAMPLE can have e.g. 2 or 3 parameters, iff macros EXAMPLE_2 and EXAMPLE_3 are defined
 #define SEQUENCE(...) BT_MACRO_OVERLOAD(SEQUENCE, __VA_ARGS__)
 #define ID(...) BT_MACRO_OVERLOAD(ID, __VA_ARGS__)
 #define SUM_OF_PAIRS(...) BT_MACRO_OVERLOAD(SUM_OF_PAIRS, __VA_ARGS__)

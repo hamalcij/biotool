@@ -54,12 +54,18 @@ namespace biotool {
   ////////////////////////////////////////////////////////////////////////
   // BEGIN PDB
 
+  /*
+    Parses a .pdb file and provides methods to its analysis
+  */
   class Pdb {
   public:
 
-    ////////////////////////////////////////////////////////////////////////
-    // BEGIN MODEL
+  ////////////////////////////////////////////////////////////////////////
+  // BEGIN MODEL
 
+    /*
+      Proxy class representing a model and storing information about its atoms
+    */
     class Model {
     public:
 
@@ -78,26 +84,44 @@ namespace biotool {
       using convexTriangle = std::tuple<fVector3&, fVector3&, fVector3&>;
       using convexHull = quickhull::VertexDataSource<float>;
 
-      ////////////////////////////////////////////////////////////////////////
-      // BEGIN CHAIN
+  ////////////////////////////////////////////////////////////////////////
+  // BEGIN CHAIN
 
+      /*
+        Proxy class to access parsed data in an instance of Pdb::Model.
+        Represents a chain within the model.
+      */
       class Chain {
       public:
 
-        ////////////////////////////////////////////////////////////////////////
-        // BEGIN RESIDUE
+  ////////////////////////////////////////////////////////////////////////
+  // BEGIN RESIDUE
 
+        /*
+          Proxy class to access parsed data in an instance of Pdb::Model.
+          Represents a residue within the model.
+        */
         class Residue {
         public:
 
-          ////////////////////////////////////////////////////////////////////////
-          // BEGIN ATOM
+  ////////////////////////////////////////////////////////////////////////
+  // BEGIN ATOM
 
+          /*
+            Proxy class to access parsed data in an instance of Pdb::Model.
+            Represents an atom within the model.
+          */
           class Atom {
           public:
 
             friend class Model;
 
+            /*
+              Atom class ctor
+              Parameters:
+              * model: instance of Model class, will be accessed
+              * index: index in the database of a parsed model
+            */
             Atom(
               const Model& model,
               const std::size_t index
@@ -123,13 +147,21 @@ namespace biotool {
             const std::size_t index_;
           };
 
-          // END ATOM
-          ////////////////////////////////////////////////////////////////////////
+  // END ATOM
+  ////////////////////////////////////////////////////////////////////////
+  // CONTINUE RESIDUE
 
           using atoms = std::vector<Atom>;
 
           friend class Model;
 
+          /*
+            Residue class ctor
+            Parameters:
+            * model: instance of Model class, will be accessed
+            * indexFrom: index in the database of a parsed model, where the first atom of current residue is stored.
+            * indexTo: index in the database of a parsed model, where the last atom of current residue is stored.
+          */
           Residue(
             const Model& model,
             const std::size_t indexFrom,
@@ -172,18 +204,33 @@ namespace biotool {
           const std::size_t indexTo_;
         };
 
-        // END RESIDUE
-        ////////////////////////////////////////////////////////////////////////
-        // BEGIN HETRESIDUE
+  // END RESIDUE
+  ////////////////////////////////////////////////////////////////////////
+  // BEGIN HETRESIDUE
 
+        /*
+          Proxy class to access parsed data in an instance of Pdb::Model.
+          Represents a ligand within the model.
+        */
         class HetResidue {
         public:
 
-          ////////////////////////////////////////////////////////////////////////
-          // BEGIN HETATOM
+  ////////////////////////////////////////////////////////////////////////
+  // BEGIN HETATOM
 
+          /*
+            Proxy class to access parsed data in an instance of Pdb::Model.
+            Represents a ligand's atom within the model.
+          */
           class HetAtom {
           public:
+
+            /*
+              HetAtom class ctor
+              Parameters:
+              * model: instance of Model class, will be accessed
+              * index: index in the database of a parsed model
+            */
             HetAtom(
               const Model& model,
               const std::size_t index
@@ -205,11 +252,19 @@ namespace biotool {
             const std::size_t index_;
           };
 
-          // END HETATOM
-          ////////////////////////////////////////////////////////////////////////
+  // END HETATOM
+  ////////////////////////////////////////////////////////////////////////
+  // CONTINUE HETRESIDUE
 
           using hetAtoms = std::vector<HetAtom>;
 
+          /*
+            HetResidue class ctor
+            Parameters:
+            * model: instance of Model class, will be accessed
+            * indexFrom: index in the database of a parsed model, where the first atom of current ligand is stored.
+            * indexTo: index in the database of a parsed model, where the last atom of current ligand is stored.
+          */
           HetResidue(
             const Model& model,
             const std::size_t indexFrom,
@@ -233,12 +288,20 @@ namespace biotool {
           const std::size_t indexTo_;
         };
 
-        // END HETRESIDUE
-        ////////////////////////////////////////////////////////////////////////
+  // END HETRESIDUE
+  ////////////////////////////////////////////////////////////////////////
+  // CONTINUE CHAIN
 
         using residues = std::vector<Residue>;
         using hetResidues = std::vector<HetResidue>;
 
+        /*
+          Chain class ctor
+          Parameters:
+          * model: instance of Model class, will be accessed
+          * indexFrom: index in the database of a parsed model, where the first atom of current chain is stored.
+          * indexTo: index in the database of a parsed model, where the last atom of current chain is stored.
+        */
         Chain(
           const Model& model,
           const std::size_t indexFrom,
@@ -267,14 +330,20 @@ namespace biotool {
         const std::size_t indexTo_;
       };
 
-      // END CHAIN
-      ///////////////////////////////////////////////////////////////////////
+  // END CHAIN
+  ///////////////////////////////////////////////////////////////////////
+  // CONTINUE MODEL
 
       using chains = std::vector<Chain>;
       using residuesSet = std::set<Chain::Residue>;
 
       friend class Pdb;
 
+      /*
+        HetResidue class ctor
+        Parameters:
+        * id: an unique ID of the model
+      */
       Model(const std::string& id) : id_(id) {}
 
       const bool operator==(const Model& other) const noexcept {
@@ -353,6 +422,8 @@ namespace biotool {
 
       const std::string id_;
 
+      // These will store output of some complex procedures.
+      // When called again, the already stored output will be obtained in contain time.
       residuesSet surfaceResidues_;
       residueStats surfaceStats_;
       residueStats buriedStats_;
@@ -360,6 +431,8 @@ namespace biotool {
       pairOfConvexAtoms farthestAtoms_;
       float diameter_{0};
 
+      // Data parsed from ATOM lines.
+      // Read about the SoA vs. AoS problem to understand why I didn't use a single vector of rows.
       ints atomSerials_;
       strings atomNames_;
       chars altLocs_;
@@ -373,6 +446,8 @@ namespace biotool {
       strings elements_;
       strings charges_;
 
+      // Data parsed from HETATM lines.
+      // Read about the SoA vs. AoS problem to understand why I didn't use a single vector of rows.
       ints hetAtomSerials_;
       strings hetAtomNames_;
       chars hetAltLocs_;
@@ -386,14 +461,22 @@ namespace biotool {
       strings hetElements_;
       strings hetCharges_;
 
-      static constexpr float solvent_{2.75}; // H2O
+      // VdW diameter of a solvent used when identifying solvent accessible residues.
+      // H2O
+      static constexpr float solvent_{2.75};
     };
 
-    // END MODEL
-    ////////////////////////////////////////////////////////////////////////
+  // END MODEL
+  ////////////////////////////////////////////////////////////////////////
+  // CONTINUE PDB
 
     using models = std::vector<Model>;
 
+    /*
+      Pdb class ctor
+      Parameters:
+      * path: path to a .pdb file which shall be parsed
+    */
     Pdb(const std::string& path) { parsePdbFile(path); }
 
     const std::size_t getNumberOfModels() const { return models_.size(); }
@@ -406,6 +489,7 @@ namespace biotool {
 
     models models_;
 
+    // Important column numbers of a standardized .pdb file and their meanings
     static const unsigned short recordNameFrom_{0};
     static const unsigned short recordNameTo_{5};
     static const unsigned short modelSerialFrom_{10};

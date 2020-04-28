@@ -40,14 +40,27 @@ SOFTWARE.
 
 namespace biotool {
 
+  /*
+    Parses a .fasta file
+  */
   class Fasta {
   public:
 
     using descriptions = std::vector<std::string>;
     using sequences = std::vector<std::string>;
 
+    /*
+      Proxy class to access parsed data in an instance of Fasta class
+    */
     class Molecule {
     public:
+
+      /*
+        Molecule class ctor
+        Parameters:
+        * fasta: instance of Fasta class, will be accessed
+        * index: index in the database of parsed .fasta file in fasta
+      */
       Molecule(Fasta& fasta, const std::size_t& index) : fasta_(fasta), index_(index) {}
 
       std::string getDescription() { return fasta_.descriptions_[index_]; }
@@ -60,6 +73,11 @@ namespace biotool {
       const std::size_t index_;
     };
 
+    /*
+      Fasta class ctor
+      Parameters:
+      * path: path to a .fasta file which shall be parsed
+    */
     Fasta(const std::string& path) { parseFastaFile(path); }
 
     const std::size_t numberOfMolecules() const { return descriptions_.size(); }

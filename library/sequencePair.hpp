@@ -41,6 +41,9 @@ SOFTWARE.
 
 namespace biotool {
 
+  /*
+    Stores two sequences and provides methods to analyse them
+  */
   class SequencePair {
   public:
 
@@ -48,6 +51,12 @@ namespace biotool {
     using optimalAlignments = std::vector<sequences>;
     using alignment = std::tuple<std::size_t, optimalAlignments>;
 
+    /*
+      SequencePair class ctor
+      Parameters:
+      * seq1: one sequence, usually of a protein or nucleic acid
+      * seq2: another sequence, usually of a protein or nucleic acid
+    */
     SequencePair(const std::string& seq1, const std::string& seq2) : sequence1_(seq1), sequence2_(seq2) {}
 
     const sequences getSequences() const { return std::make_tuple(sequence1_, sequence2_); }

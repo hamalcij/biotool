@@ -40,10 +40,20 @@ SOFTWARE.
 
 namespace biotool {
 
+  /*
+    Throws an error that file at path is corrupted.
+    Parameters:
+    * path: local path of the file that is corrupted
+  */
   inline void fileCorrupted(const std::string& path) {
     throw std::ifstream::failure("File at " + path + " is corrupted!");
   }
 
+  /*
+    Checks if file is empty by peeking one character ahead.
+    Parameters:
+    * file: input file stream to be checked for emptiness
+  */
   inline bool fileIsEmpty(std::ifstream& file) {
     return file.peek() == std::ifstream::traits_type::eof();
   }

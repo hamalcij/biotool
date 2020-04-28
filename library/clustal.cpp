@@ -35,6 +35,11 @@ SOFTWARE.
 
 namespace biotool {
 
+  /*
+    Outputs a sequence of MSA with described with given ID.
+    * id: Entry ID of MSA.
+    Returns: Sequence described with id.
+  */
   const std::string Clustal::getSequence(const std::string& id) const {
     auto it = std::find(ids_.cbegin(), ids_.cend(), id);
     if (it == ids_.cend()) {
@@ -45,6 +50,11 @@ namespace biotool {
     return readSequenceByIndex(i);
   }
 
+  /*
+    Goes through each line of a clustal file and enters parsed data into Clustal class instance's private variables.
+    Parameters:
+    * path: path to a .pdb file which shall be parsed
+  */
   void Clustal::parseClustalFile(const std::string& path) {
     std::ifstream file(path);
 
@@ -157,6 +167,13 @@ namespace biotool {
     file.close();
   }
 
+  /*
+    Outputs a part of given line from given index until the first space or end of line.
+    Parameters:
+    * line: one line of a clustal file.
+    * i: position on line from which the part of line will be parsed.
+    Returns: A part of line.
+  */
   const std::string Clustal::readAWord(const char* line, std::size_t& i) {
     std::string word = "";
     while (line[i] && !isspace(line[i])) {
@@ -167,6 +184,11 @@ namespace biotool {
     return word;
   }
 
+  /*
+    Outputs a sequence of MSA on given line within a block.
+    * i: index of a line within a block.
+    Returns: Sequence on i'th line within a block.
+  */
   const std::string Clustal::readSequenceByIndex(const std::size_t i) const {
     std::string sequence = "";
     for (auto&& column : alignment_) {
