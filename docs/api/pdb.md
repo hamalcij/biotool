@@ -32,8 +32,8 @@ std::size_t numberOfModels = NUMBER_OF_MODELS(myPdb);
 
 ## `MODEL`
 
-`MODEL` macro defines a class that will let you access specific model's
-attributes from your `.pdb` file.
+`MODEL` macro defines a proxy class that will let you access specific
+model's attributes from your `.pdb` file.
 
 To instantiate the class, use the macro `FIND_MODEL`.
 
@@ -49,8 +49,8 @@ MODEL myModel = FIND_MODEL(myPdb, "1");
 
 ## `CHAIN`
 
-`CHAIN` macro defines a class that will let you access specific chain's
-attributes from your `.pdb` file.
+`CHAIN` macro defines a proxy class that will let you access specific
+chain's attributes from your `.pdb` file.
 
 To instantiate the class, use the macro `FIND_CHAIN`.
 
@@ -65,7 +65,7 @@ CHAIN myChain = FIND_CHAIN(myModel, "A");
 
 ## `RESIDUE`
 
-`RESIDUE` macro defines a class that will let you access specific
+`RESIDUE` macro defines a proxy class that will let you access specific
 residue's attributes from your `.pdb` file.
 
 To instantiate the class, use the macro `FIND_RESIDUE`.
@@ -84,8 +84,8 @@ RESIDUE myResidue = FIND_RESIDUE(myChain, "1");
 
 ## `HET_RESIDUE`
 
-`HET_RESIDUE` macro defines a class that will let you access specific
-heterogenic residue's (ligand's) attributes from your `.pdb` file.
+`HET_RESIDUE` macro defines a proxy class that will let you access
+specific heterogenic residue's (ligand's) attributes from your `.pdb` file.
 
 To instantiate the class, use the macro `FIND_HET_RESIDUE`.
 
@@ -103,7 +103,7 @@ HET_RESIDUE myLigand = FIND_HET_RESIDUE(myChain, "156");
 
 ## `ATOM`
 
-`ATOM` macro defines a class that will let you access specific
+`ATOM` macro defines a proxy class that will let you access specific
 atom's attributes from your `.pdb` file.
 
 To instantiate the class, use the macro `FIND_ATOM`.
@@ -123,7 +123,7 @@ ATOM myAtom = FIND_ATOM(myResidue, "7");
 
 ## `HET_ATOM`
 
-`HET_ATOM` macro defines a class that will let you access specific
+`HET_ATOM` macro defines a proxy class that will let you access specific
 ligand's atom's attributes from your `.pdb` file.
 
 To instantiate the class, use the macro `FIND_ATOM`.
